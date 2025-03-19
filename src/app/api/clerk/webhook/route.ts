@@ -16,7 +16,7 @@ interface WebhookPayload {
 
 export const POST = async (req: Request) => {
   const { data }: WebhookPayload = (await req.json()) as WebhookPayload;
-  console.log(data);
+  // console.log(data);
   const { id, email_addresses, first_name, last_name, profile_image_url } =
     data;
 
