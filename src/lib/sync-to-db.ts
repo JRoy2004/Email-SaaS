@@ -103,6 +103,9 @@ async function upsertEmail(
         accountId,
         lastMessageDate: new Date(email.sentAt),
         done: false,
+        draftStatus: emailLabelType === "draft",
+        inboxStatus: emailLabelType === "inbox",
+        sentStatus: emailLabelType === "sent",
         participantIds: [
           ...new Set([
             fromAddress.id,

@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div>
       <Button>Click me</Button>
-      <LinkAccountButton />
+      <LinkAccountButton accountType="Google"> Add Acc</LinkAccountButton>
       <GetNewEmails />
     </div>
   );

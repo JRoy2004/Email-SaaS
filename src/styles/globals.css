@@ -28,7 +28,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -54,7 +54,7 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
 
@@ -65,4 +65,32 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.tiptap.ProseMirror {
+  outline: none;
+}
+
+.is-active {
+  background-color: #dadada;
+  border-radius: 4px;
+  padding: 0px 2px;
+
+  @apply border-blue-600 dark:border-blue-500 dark:bg-muted;
+}
+
+.button-group * {
+  @apply rounded-md border border-gray-400 p-0.5 text-xs transition-all hover:bg-accent hover:text-blue-600;
+}
+
+.button-icon * {
+  @apply m-0 size-4 border-none p-0;
+}
+
+.ProseMirror p.is-empty::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #a0aec0; /* Tailwind gray-400 */
+  pointer-events: none;
+  height: 0;
 }
