@@ -66,7 +66,7 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
   return (
     <div className="sm:text-md flex flex-col text-sm">
       <div className="items-centerp-2 sticky z-20 flex">
-        <div className="flex items-center gap-2">
+        <div className="z-50 flex items-center gap-2">
           {/* back-arrow only on mobile */}
           {isMobile && (
             <button
@@ -85,7 +85,10 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
                 {/* <span className="sr-only">Move to junk</span> */}
               </Button>
             </TooltipTrigger>
-            <TooltipContent className="rounded-lg bg-black p-1 text-xs text-white dark:bg-white dark:text-black">
+            <TooltipContent
+              side="bottom"
+              className="z-50 rounded-lg bg-black p-1 text-xs text-white dark:bg-white dark:text-black"
+            >
               Move to junk
             </TooltipContent>
           </Tooltip>
@@ -215,7 +218,7 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
       {threadItem ? (
         <div className="max-w-full">
           <ScrollArea className="h-[70vh]">
-            <div className="sticky top-0 z-20">
+            <div className="sticky top-0 z-10">
               <div className="flex flex-col gap-2 border-white/30 bg-white/20 p-4 font-bold backdrop-blur-md dark:border-white/10 dark:bg-black/20 sm:flex-row sm:justify-between">
                 <div className="">{threadItem.emails.at(-1)!.subject}</div>
                 <AISummarizer setSummary={setSummary} />

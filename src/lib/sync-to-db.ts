@@ -27,7 +27,8 @@ async function upsertEmail(
   accountId: string,
   index: number,
 ) {
-  console.log(`Upserting email ${index}`);
+  console.log(`Upserting email ${index + 1}`);
+  console.log(email);
   try {
     let emailLabelType:
       | "junk"
@@ -95,6 +96,10 @@ async function upsertEmail(
     const replyToAddresses = email.replyTo
       .map((addr) => addressMap.get(addr.address))
       .filter(Boolean);
+
+    const oldThread = await db.thread.findUnique({
+      where: { id: email.threadId },
+    });
 
     const thread = await db.thread.upsert({
       where: { id: email.threadId },
@@ -209,34 +214,58 @@ async function upsertEmail(
       },
     });
 
-    const threadEmails = await db.email.findMany({
-      where: { threadId: thread.id },
-      orderBy: { receivedAt: "asc" },
-    });
+    if (oldThread) {
+      const threadEmails = await db.email.findMany({
+        where: { threadId: thread.id },
+        orderBy: { receivedAt: "asc" },
+      });
 
-    let threadFolderType = "sent";
-    for (const threadEmail of threadEmails) {
-      if (threadEmail.emailLabel === "inbox") {
-        threadFolderType = "inbox";
-        break; // If any email is in inbox, the whole thread is in inbox
-      } else if (threadEmail.emailLabel === "draft") {
-        threadFolderType = "draft"; // Set to draft, but continue checking for inbox
-      } else if (threadEmail.emailLabel === "junk") {
-        threadFolderType = "junk"; // Set to junk, but continue checking for inbox
-      } else if (threadEmail.emailLabel === "trash") {
-        threadFolderType = "trash"; // Set to trash, but continue checking for inbox
+      // Initialize all statuses to false
+      const threadStatus = {
+        draft: oldThread.draftStatus,
+        inbox: oldThread.inboxStatus,
+        sent: oldThread.sentStatus,
+        junk: oldThread.junkStatus,
+        trash: oldThread.trashStatus,
+      };
+
+      const lastEmail = threadEmails[threadEmails.length - 1]!;
+      const lastEmailLabel = lastEmail.emailLabel;
+      if (threadStatus.trash) {
+        threadStatus.trash = true;
+        threadStatus.draft = false;
+        threadStatus.inbox = false;
+        threadStatus.sent = false;
+        threadStatus.junk = false;
+      } else {
+        if (lastEmailLabel === "junk" && threadStatus.junk) {
+          threadStatus.junk = true;
+          threadStatus.draft = false;
+          threadStatus.inbox = false;
+          threadStatus.sent = false;
+        } else if (lastEmailLabel === "inbox") {
+          threadStatus.inbox = true;
+          threadStatus.junk = false;
+        } else if (lastEmailLabel === "sent") {
+          threadStatus.sent = true;
+          threadStatus.junk = false;
+        } else if (lastEmailLabel === "draft") {
+          threadStatus.draft = true;
+          threadStatus.junk = false;
+        }
       }
+
+      await db.thread.update({
+        where: { id: thread.id },
+        data: {
+          draftStatus: threadStatus.draft,
+          inboxStatus: threadStatus.inbox,
+          sentStatus: threadStatus.sent,
+          trashStatus: threadStatus.trash,
+          junkStatus: threadStatus.junk,
+        },
+      });
     }
-    await db.thread.update({
-      where: { id: thread.id },
-      data: {
-        draftStatus: threadFolderType === "draft",
-        inboxStatus: threadFolderType === "inbox",
-        sentStatus: threadFolderType === "sent",
-        trashStatus: threadFolderType === "trash",
-        junkStatus: threadFolderType === "junk",
-      },
-    });
 
     // 4. Upsert Attachments
     for (const attachment of email.attachments) {

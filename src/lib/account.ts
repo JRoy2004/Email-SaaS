@@ -1,4 +1,11 @@
-import type { SyncResponse, SyncUpdatedResponse } from "@/types";
+import type {
+  SyncResponse,
+  SyncUpdatedResponse,
+  EmailHeader,
+  EmailMessage,
+  EmailAddress,
+} from "@/types";
+
 import axios from "axios";
 export class Account {
   private accessToken: string;
@@ -102,6 +109,72 @@ export class Account {
       }
     }
   };
+
+  async sendEmail({
+    from,
+    subject,
+    body,
+    inReplyTo,
+    references,
+    threadId,
+    to,
+    cc,
+    bcc,
+    replyTo,
+  }: {
+    from: EmailAddress;
+    subject: string;
+    body: string;
+    inReplyTo?: string;
+    references?: string;
+    threadId?: string;
+    to: EmailAddress[];
+    cc?: EmailAddress[];
+    bcc?: EmailAddress[];
+    replyTo?: EmailAddress;
+  }) {
+    try {
+      const response = await axios.post(
+        `${process.env.AURINKO_API_BASE_URL}/v1/email/messages`,
+        {
+          from,
+          subject,
+          body,
+          inReplyTo,
+          references,
+          threadId,
+          to,
+          cc,
+          bcc,
+          replyTo: [replyTo],
+        },
+        {
+          params: {
+            bodyType: "html",
+            returnIds: true,
+          },
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        },
+      );
+
+      console.log("Email sent successfully", response.data);
+      return response.data as {
+        id: string;
+        threadId: string;
+        status: "Ok";
+        processingStatus: "Ok" | "Incomplete";
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Axios Error sending email:", JSON.stringify(error));
+      } else {
+        console.error("Error sending email:", error);
+      }
+      throw error;
+    }
+  }
 
   /**
    * Get email and deltaToken

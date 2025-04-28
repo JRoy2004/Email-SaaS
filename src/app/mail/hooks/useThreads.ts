@@ -15,7 +15,7 @@ const useThreads = ({ page, done }: props) => {
   // const [done] = useLocalStorage<boolean>("email-done", false);
   const setThreadList = useSetAtom(threadsListAtom);
   const accountInfo = useAtomValue(accountDetails);
-  const pageSize = 3;
+  const pageSize = 10;
   // console.log(page);
   const { data, isFetching, refetch } = api.account.getThreads.useQuery(
     {

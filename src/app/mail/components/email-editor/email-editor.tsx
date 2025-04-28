@@ -1,6 +1,6 @@
 "use client";
 import { useEditor, EditorContent } from "@tiptap/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // TipTap Extensions
 import Link from "@tiptap/extension-link";
@@ -32,11 +32,9 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 // Custom Components

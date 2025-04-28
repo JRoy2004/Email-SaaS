@@ -1,19 +1,20 @@
 import { useState } from "react";
+import { api } from "@/trpc/react";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import EmailEditor from "./email-editor/email-editor";
+import { useAtomValue } from "jotai";
+import { accountDetails } from "../atoms";
+import { toast } from "sonner";
 
 type Props = { isCollapsed: boolean };
 
@@ -26,6 +27,46 @@ const ComposeEmailButton = ({ isCollapsed }: Props) => {
     [],
   );
   const [subject, setSubject] = useState<string>("");
+
+  const accountD = useAtomValue(accountDetails);
+  const sendEmail = api.account.sendEmail.useMutation();
+
+  const handleSend = async (value: string) => {
+    sendEmail.mutate(
+      {
+        accountId: accountD?.id ?? "",
+        body: value,
+        subject,
+        from: {
+          name: accountD?.name ?? "",
+          address: accountD?.emailAddress ?? "",
+        },
+        to: toValues.map((to) => ({
+          name: to.label ?? to.value,
+          address: to.value,
+        })),
+        cc: ccValues.map((cc) => ({
+          name: cc.label ?? cc.value,
+          address: cc.value,
+        })),
+        replyTo: {
+          name: accountD?.name ?? "",
+          address: accountD?.emailAddress ?? "",
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success("Email sent");
+        },
+        onError: () => {
+          toast.error("Error");
+        },
+      },
+    );
+    setSubject("");
+    setToValues([]);
+    setCcValues([]);
+  };
   return (
     <Sheet key={side}>
       <SheetTrigger asChild>
@@ -57,10 +98,8 @@ const ComposeEmailButton = ({ isCollapsed }: Props) => {
           subject={subject}
           setSubject={setSubject}
           to={toValues.map((to) => to.label)}
-          handleSend={() => {
-            console.log("Sending");
-          }}
-          isSending={false}
+          handleSend={handleSend}
+          isSending={sendEmail.isPending}
           defaultToolbarExpanded={true}
         />
       </SheetContent>

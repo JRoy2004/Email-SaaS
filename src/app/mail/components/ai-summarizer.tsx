@@ -65,7 +65,7 @@ const AISummarizer = ({
   };
 
   return (
-    <div>
+    <div className="pt-4">
       <Button onClick={handleSubmit}>
         {summarizing ? (
           <div>Summarizing...</div>

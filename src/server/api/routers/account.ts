@@ -2,6 +2,9 @@ import { createTRPCRouter, privateProcedure } from "../trpc";
 import { z } from "zod";
 import { db } from "@/server/db";
 import type { Prisma } from "@prisma/client";
+import { emailAddressSchema } from "@/types";
+import { Account } from "@/lib/account";
+import { updateEmail } from "@/lib/update-emails";
 
 const authoriseAccountAccess = async (accountId: string, userId: string) => {
   const account = await db.account.findFirst({
@@ -81,16 +84,22 @@ export const accountRouter = createTRPCRouter({
         input.accountId,
         ctx.auth.userId,
       );
+
+      await updateEmail(input.accountId);
+
+      const status = `${input.tab}Status`;
+
       let filter: Prisma.ThreadWhereInput = {};
       filter = {
         ...filter,
         accountId: account.id,
         done: input.done,
-        inboxStatus: input.tab === "inbox",
-        draftStatus: input.tab === "draft",
-        sentStatus: input.tab === "sent",
-        junkStatus: input.tab === "junk",
-        trashStatus: input.tab === "trash",
+        // inboxStatus: input.tab === "inbox",
+        // draftStatus: input.tab === "draft",
+        // sentStatus: input.tab === "sent",
+        // junkStatus: input.tab === "junk",
+        // trashStatus: input.tab === "trash",
+        [status]: true,
       };
       const totalThreads = await ctx.db.thread.count({
         where: filter,
@@ -216,5 +225,40 @@ export const accountRouter = createTRPCRouter({
           id: lastExternalEmail.internetMessageId,
         };
       }
+    }),
+  sendEmail: privateProcedure
+    .input(
+      z.object({
+        accountId: z.string(),
+        body: z.string(),
+        subject: z.string(),
+        from: emailAddressSchema,
+        to: z.array(emailAddressSchema),
+        cc: z.array(emailAddressSchema).optional(),
+        bcc: z.array(emailAddressSchema).optional(),
+        replyTo: emailAddressSchema,
+        inReplyTo: z.string().optional(),
+        threadId: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const acc = await authoriseAccountAccess(
+        input.accountId,
+        ctx.auth.userId,
+      );
+      const account = new Account(acc.accessToken);
+
+      console.log("sendmail", input);
+      await account.sendEmail({
+        from: input.from,
+        subject: input.subject,
+        body: input.body,
+        inReplyTo: input.inReplyTo,
+        threadId: input.threadId,
+        to: input.to,
+        cc: input.cc,
+        bcc: input.bcc,
+        replyTo: input.replyTo,
+      });
     }),
 });

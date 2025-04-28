@@ -8,6 +8,7 @@ import useThreads from "../hooks/useThreads";
 import { useAtom } from "jotai";
 import { threadIdAtom } from "../atoms";
 import { useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
 
 import {
   Pagination,
@@ -19,8 +20,11 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+import GetNewEmails from "@/components/GetNewEmails";
+
 const ThreadList = ({ done }: { done: boolean }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [accountId] = useLocalStorage("accountId", "");
   const { threads, isFetching, refetch, totalPages } = useThreads({
     page: currentPage,
     done: done,
@@ -66,73 +70,76 @@ const ThreadList = ({ done }: { done: boolean }) => {
 
   return (
     <div>
-      <Pagination>
-        <PaginationContent className="justify-end">
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={
-                currentPage > 1
-                  ? () => handlePageChange(currentPage - 1)
-                  : undefined
-              }
-              aria-disabled={currentPage === 1}
-              className={cn(
-                currentPage === 1 && "pointer-events-none opacity-50",
-              )}
-            />
-          </PaginationItem>
-          {currentPage > 2 && <PaginationEllipsis />}
-          {/* Previous Page (if exists) */}
-          {currentPage > 1 && (
+      <div className="flex justify-between">
+        <GetNewEmails accountId={accountId} />
+        <Pagination>
+          <PaginationContent className="justify-end">
             <PaginationItem>
-              <PaginationLink
-                href="#"
-                onClick={() => handlePageChange(currentPage - 1)}
-                className="text-xs"
-              >
-                {currentPage - 1}
+              <PaginationPrevious
+                onClick={
+                  currentPage > 1
+                    ? () => handlePageChange(currentPage - 1)
+                    : undefined
+                }
+                aria-disabled={currentPage === 1}
+                className={cn(
+                  currentPage === 1 && "pointer-events-none opacity-50",
+                )}
+              />
+            </PaginationItem>
+            {currentPage > 2 && <PaginationEllipsis />}
+            {/* Previous Page (if exists) */}
+            {currentPage > 1 && (
+              <PaginationItem>
+                <PaginationLink
+                  href="#"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  className="text-xs"
+                >
+                  {currentPage - 1}
+                </PaginationLink>
+              </PaginationItem>
+            )}
+
+            {/* Active Page */}
+            <PaginationItem>
+              <PaginationLink href="#" isActive className="text-xs">
+                {currentPage}
               </PaginationLink>
             </PaginationItem>
-          )}
 
-          {/* Active Page */}
-          <PaginationItem>
-            <PaginationLink href="#" isActive className="text-xs">
-              {currentPage}
-            </PaginationLink>
-          </PaginationItem>
+            {/* Next Page (if exists) */}
+            {currentPage < totalPages && (
+              <PaginationItem>
+                <PaginationLink
+                  href="#"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  className="text-xs"
+                >
+                  {currentPage + 1}
+                </PaginationLink>
+              </PaginationItem>
+            )}
 
-          {/* Next Page (if exists) */}
-          {currentPage < totalPages && (
+            {currentPage < totalPages - 1 && <PaginationEllipsis />}
+
             <PaginationItem>
-              <PaginationLink
-                href="#"
-                onClick={() => handlePageChange(currentPage + 1)}
-                className="text-xs"
-              >
-                {currentPage + 1}
-              </PaginationLink>
+              <PaginationNext
+                onClick={
+                  currentPage < totalPages
+                    ? () => handlePageChange(currentPage + 1)
+                    : undefined
+                }
+                aria-disabled={currentPage === totalPages}
+                className={cn(
+                  currentPage === totalPages &&
+                    "pointer-events-none opacity-50",
+                )}
+              />
             </PaginationItem>
-          )}
-
-          {currentPage < totalPages - 1 && <PaginationEllipsis />}
-
-          <PaginationItem>
-            <PaginationNext
-              onClick={
-                currentPage < totalPages
-                  ? () => handlePageChange(currentPage + 1)
-                  : undefined
-              }
-              aria-disabled={currentPage === totalPages}
-              className={cn(
-                currentPage === totalPages && "pointer-events-none opacity-50",
-              )}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
-
+          </PaginationContent>
+        </Pagination>
+      </div>
       <ScrollArea className="h-[85vh]">
         <div className="flex flex-col gap-2 p-4 pt-0">
           {Object.entries(groupedThreads ?? {}).map(([date, threads]) => (

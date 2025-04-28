@@ -20,6 +20,7 @@ import useIsMobile from "./hooks/useIsMobile";
 import { useAtomValue } from "jotai";
 import { threadIdAtom } from "./atoms";
 import ComposeEmailButton from "./components/compose-email-button";
+
 type Props = {
   defaultLayout: number[] | undefined;
   navCollasedSize: number;

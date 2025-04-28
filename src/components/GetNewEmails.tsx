@@ -2,20 +2,20 @@
 import { updateEmail } from "@/lib/update-emails";
 import React from "react";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
-const GetNewEmails = () => {
-  const router = useRouter();
+const GetNewEmails = ({ accountId }: { accountId: string }) => {
+  // const router = useRouter();
 
   return (
-    <div>
+    <div className="p-4">
       <Button
         onClick={async () => {
-          await updateEmail();
-          router.push("/mail"); // Navigate to the mail page
+          await updateEmail(accountId);
+          // router.push("/mail"); // Navigate to the mail page
         }}
       >
-        Get New Emails
+        Refresh
       </Button>
     </div>
   );
