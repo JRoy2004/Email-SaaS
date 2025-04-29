@@ -49,6 +49,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 import ReplyBox from "./reply-box";
 import AISummarizer from "./ai-summarizer";
+import { boolean } from "zod";
 
 const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
   const setThreadId = useSetAtom(threadIdAtom);
@@ -58,6 +59,7 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
   // const today = new Date();
 
   const [summary, setSummary] = useState<string>("");
+  const [expanded, setExpanded] = useState<boolean>(false);
 
   useEffect(() => {
     setSummary(""); // Reset summary when threadItem changes
@@ -220,7 +222,7 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
           <ScrollArea className="h-[70vh]">
             <div className="sticky top-0 z-10">
               <div className="flex flex-col gap-2 border-white/30 bg-white/20 p-4 font-bold backdrop-blur-md dark:border-white/10 dark:bg-black/20 sm:flex-row sm:justify-between">
-                <div className="">{threadItem.emails.at(-1)!.subject}</div>
+                <div className="">{threadItem.subject}</div>
                 <AISummarizer setSummary={setSummary} />
               </div>{" "}
               {!isMobile && (
@@ -293,8 +295,8 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
             )}
             <Separator className="mt-auto" />
             {threadItem?.emails.map((mail) => (
-              <div key={mail.id} className="-z-10 flex w-full flex-1 flex-col">
-                <div className="-z-10 flex flex-col items-start overflow-x-hidden p-2 sm:flex-row">
+              <div key={mail.id} className="flex w-full flex-1 flex-col">
+                <div className="flex flex-col items-start overflow-x-hidden p-2 sm:flex-row">
                   <div className="flex items-start gap-4 text-sm">
                     <Avatar
                       className={cn(
@@ -313,20 +315,65 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
                       <div className="break-words pr-4 text-xs font-semibold">
                         {mail.subject}
                       </div>
-                      {accountEmail === mail.from.address ? (
-                        <div className="line-clamp-1 text-xs font-semibold text-blue-600">
-                          Me
+                      <div className="flex flex-col">
+                        <div className="flex flex-col">
+                          {accountEmail === mail.from.address ? (
+                            <div className="line-clamp-1 text-xs font-semibold text-blue-600">
+                              Me
+                            </div>
+                          ) : (
+                            <div
+                              className="relative z-[100] cursor-pointer overflow-hidden"
+                              onClick={() => {
+                                console.log("Expanded changed");
+                                setExpanded((pre) => !pre);
+                              }}
+                            >
+                              <div className="line-clamp-1 text-xs">
+                                From: {mail.from.name}
+                              </div>
+                              <div className="line-clamp-1 text-xs sm:pl-9">
+                                {mail.from.address}
+                              </div>
+
+                              {expanded && (
+                                <div className="line-clamp-1 flex gap-1 text-xs">
+                                  To:{" "}
+                                  {mail.to.map((add) => (
+                                    <div key={add.id}>
+                                      {add.name && (
+                                        <div className="line-clamp-1 text-xs sm:pl-4">
+                                          {add.name}
+                                        </div>
+                                      )}
+                                      <div className="line-clamp-1 text-xs sm:pl-4">
+                                        {add.address}
+                                      </div>
+                                    </div>
+                                  ))}
+                                  {mail.cc.length > 0 && (
+                                    <div className="line-clamp-1 flex gap-1 text-xs">
+                                      To:{" "}
+                                      {mail.to.map((add) => (
+                                        <div key={add.id}>
+                                          {add.name && (
+                                            <div className="line-clamp-1 text-xs sm:pl-4">
+                                              {add.name}
+                                            </div>
+                                          )}
+                                          <div className="line-clamp-1 text-xs sm:pl-4">
+                                            {add.address}
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
-                      ) : (
-                        <div className="overflow-hidden">
-                          <div className="line-clamp-1 text-xs">
-                            From: {mail.from.name}
-                          </div>
-                          <div className="line-clamp-1 text-xs sm:pl-2 lg:pl-9">
-                            {mail.from.address}
-                          </div>
-                        </div>
-                      )}
+                      </div>
                     </div>
                   </div>
                   {mail.sentAt && (
@@ -336,9 +383,9 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
                   )}
                 </div>
                 <Separator />
-                <div className="w-screen flex-1 md:w-full">
+                <div className="flex w-screen flex-1 flex-col items-center justify-center md:w-full">
                   <div
-                    className="flex p-2 text-sm"
+                    className="flex flex-col p-2 text-sm"
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(mail.body!),
                     }}

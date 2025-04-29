@@ -140,7 +140,7 @@ const ThreadList = ({ done }: { done: boolean }) => {
           </PaginationContent>
         </Pagination>
       </div>
-      <ScrollArea className="h-[85vh]">
+      <ScrollArea className="h-[80vh]">
         <div className="flex flex-col gap-2 p-4 pt-0">
           {Object.entries(groupedThreads ?? {}).map(([date, threads]) => (
             <Fragment key={date}>

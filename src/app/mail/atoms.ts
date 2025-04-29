@@ -7,6 +7,20 @@ export type Thread = Prisma.ThreadGetPayload<{
       orderBy: { sentAt: "asc" };
       select: {
         from: true;
+        to: {
+          select: {
+            id: true;
+            name: true;
+            address: true;
+          };
+        };
+        cc: {
+          select: {
+            id: true;
+            name: true;
+            address: true;
+          };
+        };
         body: true;
         bodySnippet: true;
         emailLabel: true;
