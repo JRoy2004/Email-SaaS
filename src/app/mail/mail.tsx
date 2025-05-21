@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
@@ -10,7 +9,7 @@ import {
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
+
 import AccountSwitcher from "./components/account-switcher";
 import Sidebar from "./components/sidebar";
 import ThreadList from "./components/thread-list";
@@ -20,6 +19,7 @@ import useIsMobile from "./hooks/useIsMobile";
 import { useAtomValue } from "jotai";
 import { threadIdAtom } from "./atoms";
 import ComposeEmailButton from "./components/compose-email-button";
+import SearchBar from "./components/search-bar";
 
 type Props = {
   defaultLayout: number[] | undefined;
@@ -131,14 +131,7 @@ const Mail = ({
                   </TabsList>
                 </div>
                 <Separator />
-                <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                  <form>
-                    <div className="relative">
-                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input placeholder="Search" className="pl-8" />
-                    </div>
-                  </form>
-                </div>
+                <SearchBar />
                 <TabsContent value="all" className="m-0">
                   <ThreadList done={false} />
                 </TabsContent>

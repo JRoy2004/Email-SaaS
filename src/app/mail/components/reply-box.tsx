@@ -10,11 +10,16 @@ import { toast } from "sonner";
 const ReplyBox = () => {
   const threadId = useAtomValue(threadIdAtom);
   const [accountId] = useLocalStorage("accountId", "");
-  const { data: replyDetails } = api.account.getReplyDetails.useQuery({
-    accountId: accountId,
-    threadId: threadId ?? "",
-    replyType: "reply",
-  });
+  const { data: replyDetails } = api.account.getReplyDetails.useQuery(
+    {
+      accountId: accountId,
+      threadId: threadId ?? "",
+      replyType: "reply",
+    },
+    {
+      enabled: !!threadId,
+    },
+  );
   if (!replyDetails) return <></>;
   return (
     <Component

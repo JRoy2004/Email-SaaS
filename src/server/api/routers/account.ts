@@ -1,10 +1,11 @@
 import { createTRPCRouter, privateProcedure } from "../trpc";
-import { z } from "zod";
+import { string, z } from "zod";
 import { db } from "@/server/db";
-import type { Prisma } from "@prisma/client";
+import type { Prisma, Thread } from "@prisma/client";
 import { emailAddressSchema } from "@/types";
 import { Account } from "@/lib/account";
 import { updateEmail } from "@/lib/update-emails";
+import { OramaClient } from "@/lib/orama";
 
 const authoriseAccountAccess = async (accountId: string, userId: string) => {
   const account = await db.account.findFirst({
@@ -274,5 +275,75 @@ export const accountRouter = createTRPCRouter({
         bcc: input.bcc,
         replyTo: input.replyTo,
       });
+    }),
+  searchEmail: privateProcedure
+    .input(
+      z.object({
+        accountId: z.string(),
+        query: z.string(),
+        page: z.number().default(1),
+        pageSize: z.number().default(15),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await authoriseAccountAccess(input.accountId, ctx.auth.userId);
+      const oramaDB = new OramaClient(input.accountId);
+      await oramaDB.initialize();
+      const searchResults = await oramaDB.search({ term: input.query });
+      const threadScoreMap = new Map<string, number>();
+      const threadIds = searchResults.hits.map((doc) => {
+        threadScoreMap.set(doc.document.threadId as string, doc.score);
+        return doc.document.threadId as string;
+      });
+      const files = await ctx.db.thread.findMany({
+        where: {
+          id: { in: threadIds },
+        },
+        include: {
+          emails: {
+            orderBy: {
+              sentAt: "asc",
+            },
+            select: {
+              from: true,
+              to: {
+                select: {
+                  id: true,
+                  name: true,
+                  address: true,
+                },
+              },
+              cc: {
+                select: {
+                  id: true,
+                  name: true,
+                  address: true,
+                },
+              },
+              body: true,
+              bodySnippet: true,
+              emailLabel: true,
+              subject: true,
+              sysLabels: true,
+              sysClassifications: true,
+              id: true,
+              sentAt: true,
+            },
+          },
+        },
+        take: input.pageSize,
+        skip: (input.page - 1) * input.pageSize,
+      });
+      const sortedFiles = files.slice().sort((a, b) => {
+        const scoreA = threadScoreMap.get(a.id) ?? 0;
+        const scoreB = threadScoreMap.get(b.id) ?? 0;
+        return scoreB - scoreA;
+      });
+
+      // return sortedFiles;
+      return {
+        results: sortedFiles,
+        totalPages: Math.ceil(searchResults.hits.length / input.pageSize),
+      };
     }),
 });

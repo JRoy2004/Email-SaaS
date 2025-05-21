@@ -1,9 +1,10 @@
 import pLimit from "p-limit";
-import type { EmailMessage } from "@/types";
 import { db } from "@/server/db";
 import { Prisma } from "@prisma/client";
-import type { EmailAddress, EmailAttachment } from "@/types";
+import type { EmailAddress, EmailAttachment, EmailMessage } from "@/types";
 import type { InputJsonValue } from "@prisma/client/runtime/library";
+import { OramaClient } from "./orama";
+import { getPlainText } from "@/utils/getPlainText";
 
 export async function syncEmailToDatabase(
   emails: EmailMessage[],
@@ -11,10 +12,27 @@ export async function syncEmailToDatabase(
 ) {
   console.log(`Attempting to sync ${emails.length} emails to database.`);
   const limit = pLimit(10);
+  const oramaDB = new OramaClient(accountId);
+  await oramaDB.initialize();
+
   try {
     await Promise.all(
       emails.map((email, index) =>
-        limit(() => upsertEmail(email, accountId, index)),
+        limit(async () => {
+          await upsertEmail(email, accountId, index);
+
+          // Build the document in the shape expected by Orama
+          const emailDoc = {
+            subject: email.subject || "",
+            body: email.bodySnippet ?? getPlainText(email.body ?? ""),
+            from: `${email.from.name} <${email.from.address}>`,
+            to: email.to.map((t) => `${t.name} <${t.address}>`),
+            sentAt: email.sentAt,
+            threadId: email.threadId,
+          };
+
+          await oramaDB.insert(emailDoc);
+        }),
       ),
     );
   } catch (error) {
@@ -29,6 +47,7 @@ async function upsertEmail(
 ) {
   console.log(`Upserting email ${index + 1}`);
   console.log(email);
+
   try {
     let emailLabelType:
       | "junk"

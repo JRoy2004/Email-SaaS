@@ -1,12 +1,12 @@
-import { Fragment, type ComponentProps } from "react";
+import { Fragment, type ComponentProps, useEffect } from "react";
 import { format } from "date-fns";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import useThreads from "../hooks/useThreads";
-import { useAtom } from "jotai";
-import { threadIdAtom } from "../atoms";
+import { useAtom, useAtomValue } from "jotai";
+import { threadIdAtom, searchingAtom, searchValueAtom } from "../atoms";
 import { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
@@ -25,10 +25,18 @@ import GetNewEmails from "@/components/GetNewEmails";
 const ThreadList = ({ done }: { done: boolean }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [accountId] = useLocalStorage("accountId", "");
-  const { threads, isFetching, refetch, totalPages } = useThreads({
+  const isSearching = useAtomValue(searchingAtom);
+
+  const searchValue = useAtomValue(searchValueAtom);
+  const { threads, totalPages } = useThreads({
     page: currentPage,
     done: done,
+    searchItem: searchValue,
   });
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [isSearching]);
 
   const [threadId, setthreadId] = useAtom(threadIdAtom);
 
@@ -41,9 +49,8 @@ const ThreadList = ({ done }: { done: boolean }) => {
   const groupedThreads = threads?.reduce(
     (acc, thread) => {
       const date = format(thread.emails[0]?.sentAt ?? new Date(), "yyyy-MM-dd");
-      if (!acc[date]) {
-        acc[date] = [];
-      }
+      acc[date] ??= [];
+
       acc[date].push(thread);
       return acc;
     },
@@ -141,58 +148,65 @@ const ThreadList = ({ done }: { done: boolean }) => {
         </Pagination>
       </div>
       <ScrollArea className="h-[80vh]">
-        <div className="flex flex-col gap-2 p-4 pt-0">
-          {Object.entries(groupedThreads ?? {}).map(([date, threads]) => (
-            <Fragment key={date}>
-              <div className="mt-5 text-xs font-medium text-muted-foreground first:mt-0">
-                {date}
-              </div>
-              {threads.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setthreadId(item.id)}
-                  className={cn(
-                    "flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
-                    { "border-blue-500 bg-accent": item.id === threadId },
-                  )}
-                >
-                  <div className="flex w-full flex-col gap-1">
-                    <div className="flex items-center">
-                      <div className="flex w-[80%] items-center">
-                        <div className="font-semibold">{item.subject}</div>
-                      </div>
-                      <div className="ml-auto text-xs">
-                        {formatDistanceToNow(new Date(item.lastMessageDate), {
-                          addSuffix: true,
-                        })}
+        {isSearching ? (
+          <div>Searching...</div>
+        ) : (
+          <div className="flex flex-col gap-2 p-4 pt-0">
+            {Object.entries(groupedThreads ?? {}).map(([date, threads]) => (
+              <Fragment key={date}>
+                <div className="mt-5 text-xs font-medium text-muted-foreground first:mt-0">
+                  {date}
+                </div>
+                {threads.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setthreadId(item.id)}
+                    className={cn(
+                      "flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
+                      { "border-blue-500 bg-accent": item.id === threadId },
+                    )}
+                  >
+                    <div className="flex w-full flex-col gap-1">
+                      <div className="flex items-center">
+                        <div className="flex w-[80%] items-center">
+                          <div className="font-semibold">{item.subject}</div>
+                        </div>
+                        <div className="ml-auto text-xs">
+                          {formatDistanceToNow(new Date(item.lastMessageDate), {
+                            addSuffix: true,
+                          })}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="line-clamp-2 text-xs text-muted-foreground">
-                    {(item.emails.at(-1)?.bodySnippet ?? "").substring(0, 300)}
-                  </div>
-                  <div>
-                    {item.emails[0]?.sysClassifications && (
-                      <div className="flex items-center gap-2">
-                        {systemLabelList(item.emails).map((label) => {
-                          if (label === "unread") return null;
-                          return (
-                            <Badge
-                              key={label}
-                              variant={gerBadgeVariantFormLabel(label)}
-                            >
-                              {label}
-                            </Badge>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </Fragment>
-          ))}
-        </div>
+                    <div className="line-clamp-2 text-xs text-muted-foreground">
+                      {(item.emails.at(-1)?.bodySnippet ?? "").substring(
+                        0,
+                        300,
+                      )}
+                    </div>
+                    <div>
+                      {item.emails[0]?.sysClassifications && (
+                        <div className="flex items-center gap-2">
+                          {systemLabelList(item.emails).map((label) => {
+                            if (label === "unread") return null;
+                            return (
+                              <Badge
+                                key={label}
+                                variant={gerBadgeVariantFormLabel(label)}
+                              >
+                                {label}
+                              </Badge>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </Fragment>
+            ))}
+          </div>
+        )}
       </ScrollArea>
     </div>
   );

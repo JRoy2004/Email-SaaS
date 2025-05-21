@@ -49,3 +49,6 @@ export const threadsListAtom = atom<Thread[] | null>(null);
 export const threadAtom = atom((get) => {
   return get(threadsListAtom)?.find((item) => get(threadIdAtom) == item.id);
 });
+
+export const searchValueAtom = atom<string>("");
+export const searchingAtom = atom<boolean>(false);

@@ -82,3 +82,14 @@ export interface EmailHeader {
   name: string;
   value: string;
 }
+
+export interface OramaEmail {
+  subject: string;
+  body: string;
+  //   rawBody: "string",
+  from: string;
+  to: string[];
+  sentAt: string;
+  //   embeddings: "vector[1536]",
+  threadId: string;
+}
