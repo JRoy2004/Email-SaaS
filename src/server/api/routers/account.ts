@@ -1,7 +1,7 @@
 import { createTRPCRouter, privateProcedure } from "../trpc";
-import { string, z } from "zod";
+import { z } from "zod";
 import { db } from "@/server/db";
-import type { Prisma, Thread } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { emailAddressSchema } from "@/types";
 import { Account } from "@/lib/account";
 import { updateEmail } from "@/lib/update-emails";
@@ -210,6 +210,7 @@ export const accountRouter = createTRPCRouter({
       if (!thread || thread.emails.length === 0)
         throw new Error("Thread not Found");
       const lastExternalEmail = thread.emails
+        .slice()
         .reverse()
         .find((email) => email.from.address !== account.emailAddress);
 
@@ -340,14 +341,6 @@ export const accountRouter = createTRPCRouter({
         return scoreB - scoreA;
       });
 
-      console.log(
-        // threadIds,
-        threadIds,
-        files.map((item) => item.id),
-      );
-      // console.log(searchResults.hits);
-
-      // return sortedFiles;
       return {
         results: sortedFiles,
         totalPages: Math.ceil(threadIds.length / input.pageSize),

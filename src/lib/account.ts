@@ -1,14 +1,8 @@
-import type {
-  SyncResponse,
-  SyncUpdatedResponse,
-  EmailHeader,
-  EmailMessage,
-  EmailAddress,
-} from "@/types";
+import type { SyncResponse, SyncUpdatedResponse, EmailAddress } from "@/types";
 
 import axios from "axios";
 export class Account {
-  private accessToken: string;
+  private readonly accessToken: string;
 
   constructor(token: string) {
     this.accessToken = token;

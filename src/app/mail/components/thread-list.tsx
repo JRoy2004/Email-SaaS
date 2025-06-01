@@ -8,7 +8,7 @@ import useThreads from "../hooks/useThreads";
 import { useAtom, useAtomValue } from "jotai";
 import { threadIdAtom, searchingAtom, searchValueAtom } from "../atoms";
 import { useState } from "react";
-import { useDebounceValue, useLocalStorage } from "usehooks-ts";
+import { useLocalStorage } from "usehooks-ts";
 
 import {
   Pagination,
@@ -28,13 +28,13 @@ const ThreadList = ({ done }: { done: boolean }) => {
   const isSearching = useAtomValue(searchingAtom);
 
   const searchValue = useAtomValue(searchValueAtom);
-  // const [queryValue] = useDebounceValue(searchValue, 500);
 
-  const { threads, totalPages } = useThreads({
+  const { threads, isFetching, totalPages } = useThreads({
     page: currentPage,
     done: done,
     searchItem: searchValue,
   });
+
   useEffect(() => {
     setCurrentPage(1);
     console.log(searchValue);
@@ -155,7 +155,7 @@ const ThreadList = ({ done }: { done: boolean }) => {
         </Pagination>
       </div>
       <ScrollArea className="h-[80vh]">
-        {isSearching ? (
+        {isFetching ? (
           <div>Searching...</div>
         ) : (
           <div className="flex flex-col gap-2 p-4 pt-0">

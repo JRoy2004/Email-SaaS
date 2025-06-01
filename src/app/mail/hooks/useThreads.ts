@@ -86,9 +86,10 @@ const useThreads = ({ page, done, searchItem }: Props) => {
   useEffect(() => {
     if (activeData?.threads) {
       setThreadList(activeData.threads);
+      console.log("IsSearching to false");
       setIsSearching(false);
     }
-  }, [activeData?.threads]);
+  }, [activeData]);
 
   return {
     threads: activeData?.threads ?? [],
