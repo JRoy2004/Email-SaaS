@@ -8,7 +8,7 @@ import { updatedeltaToken, syncEmailToDatabase } from "./sync-to-db";
 export const updateEmail = async (accountId: string): Promise<void> => {
   // Helper function for consistent error logging
   const logError = (message: string, error?: unknown) => {
-    console.error(`[Email Sync Error] ${message}`, error ? error : "");
+    console.error(`[Email Sync Error] ${message}`, error ?? "");
   };
 
   try {

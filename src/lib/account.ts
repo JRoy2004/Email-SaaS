@@ -44,7 +44,7 @@ export class Account {
       throw error;
     }
   };
-  private getUpdatedEmils = async (
+  private getUpdatedEmails = async (
     deltaToken: string | null = null,
     pageToken: string | null = null,
   ) => {
@@ -79,13 +79,13 @@ export class Account {
         syncResponse = await this.startSync();
       }
       let storedDeltaToken = syncResponse.syncUpdatedToken;
-      let syncData = await this.getUpdatedEmils(storedDeltaToken, null);
+      let syncData = await this.getUpdatedEmails(storedDeltaToken, null);
       storedDeltaToken = syncData.nextDeltaToken;
       let emailRecords = syncData.records;
 
       // fetch all email records
       while (syncData.nextPageToken) {
-        syncData = await this.getUpdatedEmils(null, syncData.nextPageToken);
+        syncData = await this.getUpdatedEmails(null, syncData.nextPageToken);
         storedDeltaToken = syncData.nextDeltaToken;
         emailRecords = [...emailRecords, ...syncData.records];
       }
@@ -181,13 +181,13 @@ export class Account {
    */
   async getEmailDeltaToken(token: string) {
     let storedDeltaToken = token;
-    let syncData = await this.getUpdatedEmils(storedDeltaToken, null);
+    let syncData = await this.getUpdatedEmails(storedDeltaToken, null);
     storedDeltaToken = syncData.nextDeltaToken;
     let emailRecords = syncData.records;
 
     // fetch all email records
     while (syncData.nextPageToken) {
-      syncData = await this.getUpdatedEmils(null, syncData.nextPageToken);
+      syncData = await this.getUpdatedEmails(null, syncData.nextPageToken);
       storedDeltaToken = syncData.nextDeltaToken;
       emailRecords = [...emailRecords, ...syncData.records];
     }

@@ -291,10 +291,10 @@ export const accountRouter = createTRPCRouter({
       await oramaDB.initialize();
       const searchResults = await oramaDB.search({ term: input.query });
       const threadScoreMap = new Map<string, number>();
-      const threadIds = searchResults.hits.map((doc) => {
+      searchResults.hits.forEach((doc) => {
         threadScoreMap.set(doc.document.threadId as string, doc.score);
-        return doc.document.threadId as string;
       });
+      const threadIds = [...threadScoreMap.keys()];
       const files = await ctx.db.thread.findMany({
         where: {
           id: { in: threadIds },
@@ -340,10 +340,17 @@ export const accountRouter = createTRPCRouter({
         return scoreB - scoreA;
       });
 
+      console.log(
+        // threadIds,
+        threadIds,
+        files.map((item) => item.id),
+      );
+      // console.log(searchResults.hits);
+
       // return sortedFiles;
       return {
         results: sortedFiles,
-        totalPages: Math.ceil(searchResults.hits.length / input.pageSize),
+        totalPages: Math.ceil(threadIds.length / input.pageSize),
       };
     }),
 });

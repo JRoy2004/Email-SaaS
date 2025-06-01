@@ -1,13 +1,21 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Loader2, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { searchingAtom, searchValueAtom } from "../atoms";
+import { useDebounceValue } from "usehooks-ts";
 
 const SearchBar = () => {
-  const [searchValue, setSearchValue] = useAtom(searchValueAtom);
+  const [searchValue, setSearchValue] = useState("");
+  const setSearchVal = useSetAtom(searchValueAtom);
   const [isSearching, setIsSearching] = useAtom(searchingAtom);
+  const [debouncedValue, setValue] = useDebounceValue("", 500);
+
+  useEffect(() => {
+    setValue(searchValue);
+    setSearchVal(debouncedValue);
+  }, [searchValue, setValue, debouncedValue, setSearchVal]);
 
   const handleBlur = () => {
     if (searchValue !== "") return;

@@ -11,7 +11,7 @@ export async function syncEmailToDatabase(
   accountId: string,
 ) {
   console.log(`Attempting to sync ${emails.length} emails to database.`);
-  const limit = pLimit(10);
+  const limit = pLimit(20);
   const oramaDB = new OramaClient(accountId);
   await oramaDB.initialize();
 

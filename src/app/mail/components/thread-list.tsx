@@ -8,7 +8,7 @@ import useThreads from "../hooks/useThreads";
 import { useAtom, useAtomValue } from "jotai";
 import { threadIdAtom, searchingAtom, searchValueAtom } from "../atoms";
 import { useState } from "react";
-import { useLocalStorage } from "usehooks-ts";
+import { useDebounceValue, useLocalStorage } from "usehooks-ts";
 
 import {
   Pagination,
@@ -28,15 +28,17 @@ const ThreadList = ({ done }: { done: boolean }) => {
   const isSearching = useAtomValue(searchingAtom);
 
   const searchValue = useAtomValue(searchValueAtom);
+  // const [queryValue] = useDebounceValue(searchValue, 500);
+
   const { threads, totalPages } = useThreads({
     page: currentPage,
     done: done,
     searchItem: searchValue,
   });
-
   useEffect(() => {
     setCurrentPage(1);
-  }, [isSearching]);
+    console.log(searchValue);
+  }, [isSearching, searchValue]);
 
   const [threadId, setthreadId] = useAtom(threadIdAtom);
 
@@ -46,16 +48,21 @@ const ThreadList = ({ done }: { done: boolean }) => {
     }
   };
 
-  const groupedThreads = threads?.reduce(
-    (acc, thread) => {
-      const date = format(thread.emails[0]?.sentAt ?? new Date(), "yyyy-MM-dd");
-      acc[date] ??= [];
+  const groupedThreads = searchValue
+    ? { "0000": threads }
+    : threads?.reduce(
+        (acc, thread) => {
+          const date = format(
+            thread.emails[0]?.sentAt ?? new Date(),
+            "yyyy-MM-dd",
+          );
+          acc[date] ??= [];
 
-      acc[date].push(thread);
-      return acc;
-    },
-    {} as Record<string, typeof threads>,
-  );
+          acc[date].push(thread);
+          return acc;
+        },
+        {} as Record<string, typeof threads>,
+      );
 
   const systemLabelList = (
     thread: NonNullable<typeof threads>[number]["emails"],
@@ -154,9 +161,11 @@ const ThreadList = ({ done }: { done: boolean }) => {
           <div className="flex flex-col gap-2 p-4 pt-0">
             {Object.entries(groupedThreads ?? {}).map(([date, threads]) => (
               <Fragment key={date}>
-                <div className="mt-5 text-xs font-medium text-muted-foreground first:mt-0">
-                  {date}
-                </div>
+                {date !== "0000" && (
+                  <div className="mt-5 text-xs font-medium text-muted-foreground first:mt-0">
+                    {date}
+                  </div>
+                )}
                 {threads.map((item) => (
                   <button
                     key={item.id}
