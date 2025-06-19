@@ -1,0 +1,21 @@
+import type { Config } from "jest";
+
+const config: Config = {
+  preset: "ts-jest/presets/js-with-babel",
+  testEnvironment: "jsdom",
+  roots: ["<rootDir>/tests"],
+  testMatch: ["**/*.test.ts", "**/*.test.tsx"],
+  setupFilesAfterEnv: ["<rootDir>/tests/setup/jest.setup.ts"],
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
+  transform: {
+    "^.+\\.(ts|tsx|js|jsx)$": "babel-jest",
+  },
+  transformIgnorePatterns: ["/node_modules/(?!@clerk|html-to-text|cheerio)/"],
+
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+    "^@tests/(.*)$": "<rootDir>/tests/$1",
+  },
+};
+
+export default config;

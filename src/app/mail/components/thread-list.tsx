@@ -156,7 +156,13 @@ const ThreadList = ({ done }: { done: boolean }) => {
       </div>
       <ScrollArea className="h-[80vh]">
         {isFetching ? (
-          <div>Searching...</div>
+          <div className="pl-4">
+            {searchValue ? (
+              <div className="">Searching...</div>
+            ) : (
+              <div className="">Loading...</div>
+            )}
+          </div>
         ) : (
           <div className="flex flex-col gap-2 p-4 pt-0">
             {Object.entries(groupedThreads ?? {}).map(([date, threads]) => (

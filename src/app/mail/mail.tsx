@@ -20,6 +20,7 @@ import { useAtomValue } from "jotai";
 import { threadIdAtom } from "./atoms";
 import ComposeEmailButton from "./components/compose-email-button";
 import SearchBar from "./components/search-bar";
+import AskAI from "./components/ask-AI";
 
 type Props = {
   defaultLayout: number[] | undefined;
@@ -28,7 +29,7 @@ type Props = {
 };
 
 const Mail = ({
-  defaultLayout = [20, 32, 48],
+  defaultLayout = [21, 33, 46],
   navCollasedSize = 50,
   defaultCollapsed = false,
 }: Props) => {
@@ -72,7 +73,7 @@ const Mail = ({
                   "h-screen min-w-[50px] transition-all duration-300 ease-in-out",
               )}
             >
-              <div className="flex h-full flex-1 flex-col justify-start">
+              <div className="flex h-screen flex-1 flex-col justify-start">
                 <div
                   className={cn(
                     "flex items-center justify-between",
@@ -85,7 +86,7 @@ const Mail = ({
                   </div>
                 </div>
                 <div
-                  className={`flex h-[50px] items-center justify-between p-5 ${isCollapsed ? "h-[52px]" : "px-2"}`}
+                  className={`flex h-[50px] items-center justify-between py-5 ${isCollapsed ? "h-[52px] px-2" : "px-5"}`}
                 >
                   {/* Account Switcher */}
                   <AccountSwitcher isCollapsed={isCollapsed} />
@@ -96,15 +97,14 @@ const Mail = ({
                       {/* sidebar */}
                       <Sidebar isCollapsed={isCollapsed} />
                     </div>
-                    <div className="mx-auto">
+                    <div className={cn(isCollapsed ? "" : "mx-auto")}>
                       {/* Compose */}
                       <ComposeEmailButton isCollapsed={isCollapsed} />
                     </div>
                     <Separator />
                   </div>
-                  <div className="">
-                    {/**  AI */}
-                    Ask AI
+                  <div className="pl-2">
+                    <AskAI isCollapsed={isCollapsed} />
                   </div>
                 </div>
               </div>

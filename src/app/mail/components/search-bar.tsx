@@ -37,7 +37,7 @@ const SearchBar = () => {
           onFocus={() => {
             if (searchValue) setIsSearching(true);
           }}
-          // onBlur={handleBlur}
+          onBlur={handleBlur}
         />
         <div className="absolute right-2 top-2.5 flex items-center gap-2">
           {isSearching && (

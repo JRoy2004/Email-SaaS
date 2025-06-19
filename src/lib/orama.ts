@@ -1,8 +1,9 @@
-import { create, insert, search, type AnyOrama } from "@orama/orama";
+import { create, insert, search, type AnyOrama, remove } from "@orama/orama";
 import { persist, restore } from "@orama/plugin-data-persistence";
 import { db } from "@/server/db";
 // import { getEmbeddings } from "@/lib/embeddings";
 import type { OramaEmail } from "@/types";
+import { getEmbeddings } from "./embeddings";
 
 export class OramaClient {
   private orama!: AnyOrama;
@@ -25,13 +26,14 @@ export class OramaClient {
     } else {
       this.orama = create({
         schema: {
+          id: "string",
           subject: "string",
           body: "string",
           //   rawBody: "string",
           from: "string",
           to: "string[]",
           sentAt: "string",
-          //   embeddings: "vector[1536]",
+          embeddings: "vector[1536]",
           threadId: "string",
         },
       });
@@ -44,31 +46,27 @@ export class OramaClient {
     await this.saveIndex();
   }
 
-  //   async vectorSearch({
-  //     prompt,
-  //     numResults = 10,
-  //   }: {
-  //     prompt: string;
-  //     numResults?: number;
-  //   }) {
-  //     const embeddings = await getEmbeddings(prompt);
-  //     const results = await search(this.orama, {
-  //       mode: "hybrid",
-  //       term: prompt,
-  //       vector: {
-  //         value: embeddings,
-  //         property: "embeddings",
-  //       },
-  //       similarity: 0.8,
-  //       limit: numResults,
-  //       // hybridWeights: {
-  //       //     text: 0.8,
-  //       //     vector: 0.2,
-  //       // }
-  //     });
-  //     // console.log(results.hits.map(hit => hit.document))
-  //     return results;
-  //   }
+  async vectorSearch({
+    prompt,
+    numResults = 10,
+  }: {
+    prompt: string;
+    numResults?: number;
+  }) {
+    const embeddings = await getEmbeddings(prompt);
+    const results = await search(this.orama, {
+      mode: "hybrid",
+      term: prompt,
+      vector: {
+        value: embeddings,
+        property: "embeddings",
+      },
+      similarity: 0.8,
+      limit: numResults,
+    });
+    // console.log(results.hits.map(hit => hit.document))
+    return results;
+  }
   async search({ term }: { term: string }) {
     return await search(this.orama, {
       term,
@@ -82,5 +80,22 @@ export class OramaClient {
       where: { id: this.accountId },
       data: { oramaIndex: index as Buffer },
     });
+  }
+
+  async removeThread(threadId: string) {
+    const results = await search(this.orama, {
+      term: threadId,
+      properties: ["threadId"],
+      tolerance: 0,
+    });
+
+    for (const hit of results.hits) {
+      const id = hit.document.id;
+      if (id) {
+        await remove(this.orama, id);
+      }
+    }
+
+    await this.saveIndex();
   }
 }

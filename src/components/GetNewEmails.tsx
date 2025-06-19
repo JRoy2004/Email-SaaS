@@ -2,6 +2,7 @@
 import { updateEmail } from "@/lib/update-emails";
 import React from "react";
 import { Button } from "./ui/button";
+import { TfiReload } from "react-icons/tfi";
 // import { useRouter } from "next/navigation";
 
 const GetNewEmails = ({ accountId }: { accountId: string }) => {
@@ -12,10 +13,10 @@ const GetNewEmails = ({ accountId }: { accountId: string }) => {
       <Button
         onClick={async () => {
           await updateEmail(accountId);
-          // router.push("/mail"); // Navigate to the mail page
         }}
+        variant="secondary"
       >
-        Refresh
+        <TfiReload />
       </Button>
     </div>
   );

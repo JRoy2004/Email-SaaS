@@ -1,3 +1,4 @@
+import React from "react";
 import LinkAccountButton from "./link-account-button";
 import {
   Menubar,

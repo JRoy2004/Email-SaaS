@@ -232,10 +232,18 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
                     >
                       <AvatarImage alt="avatar" />
                       <AvatarFallback>
-                        {mail.from
-                          .name!.split(" ")
+                        {mail.from.name
+                          ?.split(" ")
                           .map((chunk) => chunk[0])
-                          .join("")}
+                          .join("") ?? (
+                          <div className="text-[8px]">
+                            {
+                              mail.from.address.split(".")[
+                                mail.from.address.split(".").length - 2
+                              ]
+                            }
+                          </div>
+                        )}
                       </AvatarFallback>
                     </Avatar>
                     <div className="grid gap-1 overflow-hidden">
@@ -250,7 +258,7 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
                             </div>
                           ) : (
                             <div
-                              className="relative z-[100] cursor-pointer overflow-hidden"
+                              className="relative -z-[100] cursor-pointer overflow-hidden"
                               onClick={() => {
                                 console.log("Expanded changed");
                                 setExpanded((pre) => !pre);
@@ -309,8 +317,7 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
                     </div>
                   )}
                 </div>
-                <Separator />
-                <div className="flex w-screen flex-1 flex-col items-center justify-center md:w-full">
+                <div className="flex w-screen flex-1 flex-col items-start justify-center md:w-full">
                   <div
                     className="flex flex-col p-2 text-sm"
                     dangerouslySetInnerHTML={{
@@ -318,6 +325,7 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
                     }}
                   />
                 </div>
+                <Separator />
               </div>
             ))}
           </ScrollArea>
@@ -327,7 +335,7 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
           No message selected
         </div>
       )}
-      <Separator className="mt-auto" />
+      <Separator />
       <div>
         <ReplyBox />
       </div>

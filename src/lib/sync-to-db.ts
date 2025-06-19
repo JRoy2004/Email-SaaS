@@ -5,6 +5,7 @@ import type { EmailAddress, EmailAttachment, EmailMessage } from "@/types";
 import type { InputJsonValue } from "@prisma/client/runtime/library";
 import { OramaClient } from "./orama";
 import { getPlainText } from "@/utils/getPlainText";
+import { getEmbeddings } from "./embeddings";
 
 export async function syncEmailToDatabase(
   emails: EmailMessage[],
@@ -20,15 +21,19 @@ export async function syncEmailToDatabase(
       emails.map((email, index) =>
         limit(async () => {
           await upsertEmail(email, accountId, index);
+          const bodyContent =
+            email.bodySnippet ?? getPlainText(email.body ?? "");
+          const embeddings = getEmbeddings(email.subject + bodyContent);
 
           // Build the document in the shape expected by Orama
           const emailDoc = {
             subject: email.subject || "",
-            body: email.bodySnippet ?? getPlainText(email.body ?? ""),
+            body: bodyContent,
             from: `${email.from.name} <${email.from.address}>`,
             to: email.to.map((t) => `${t.name} <${t.address}>`),
             sentAt: email.sentAt,
             threadId: email.threadId,
+            embeddings: embeddings,
           };
 
           await oramaDB.insert(emailDoc);

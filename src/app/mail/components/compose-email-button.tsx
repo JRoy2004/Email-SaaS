@@ -2,8 +2,6 @@ import { useState } from "react";
 import { api } from "@/trpc/react";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
@@ -15,6 +13,7 @@ import EmailEditor from "./email-editor/email-editor";
 import { useAtomValue } from "jotai";
 import { accountDetails } from "../atoms";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 type Props = { isCollapsed: boolean };
 
@@ -70,7 +69,7 @@ const ComposeEmailButton = ({ isCollapsed }: Props) => {
   return (
     <Sheet key={side}>
       <SheetTrigger asChild>
-        <Button>
+        <Button className={cn(isCollapsed && "w-9")}>
           {isCollapsed ? (
             <Pencil size={20} strokeWidth={2} />
           ) : (

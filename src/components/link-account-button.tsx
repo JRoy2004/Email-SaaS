@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import { getAurinkoAuthUrl } from "@/lib/aurinko";
 import { Button } from "./ui/button";
 import type { ReactNode } from "react";
