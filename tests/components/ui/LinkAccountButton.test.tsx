@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 jest.mock("@/lib/aurinko", () => ({
   getAurinkoAuthUrl: jest.fn(
@@ -7,6 +7,7 @@ jest.mock("@/lib/aurinko", () => ({
   ),
 }));
 import LinkAccountButton from "@/components/link-account-button";
+import { getAurinkoAuthUrl } from "@/lib/aurinko";
 
 describe("LinkAccountButton", () => {
   it("renders with children", () => {
@@ -30,5 +31,15 @@ describe("LinkAccountButton", () => {
     const button = screen.getByRole("button");
     expect(button).toHaveClass("bg-[#0072C6]");
     expect(button).toHaveClass("text-white");
+  });
+  it("calls getAurinkoAuthUrl on click", async () => {
+    render(<LinkAccountButton accountType="Google">Connect</LinkAccountButton>);
+    const button = screen.getByRole("button");
+
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(getAurinkoAuthUrl).toHaveBeenCalledWith("Google");
+    });
   });
 });

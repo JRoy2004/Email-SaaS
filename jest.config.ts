@@ -16,6 +16,7 @@ const config: Config = {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@tests/(.*)$": "<rootDir>/tests/$1",
   },
+  moduleDirectories: ["node_modules", "src"], // optional but helps resolve paths
 };
 
 export default config;

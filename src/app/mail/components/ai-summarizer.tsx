@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Brain } from "lucide-react";
 import { useAtomValue } from "jotai";
 import { threadAtom } from "../atoms";
-
+import React from "react";
 import { convertHtmlToPlainText } from "@/utils/convertHtmlToPlainText";
 import { api } from "@/trpc/react";
 import { useState } from "react";

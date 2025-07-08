@@ -1,3 +1,4 @@
+import React from "react";
 import DOMPurify from "dompurify";
 import { useState, useEffect } from "react";
 import { accountDetails, threadAtom, threadIdAtom } from "../atoms";

@@ -1,3 +1,4 @@
+import React from "react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -27,9 +28,9 @@ const Sidebar = ({ isCollapsed }: sidebarProps) => {
     accountId,
   });
 
-  if (!data) return <div></div>;
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
+  if (!data) return <div></div>;
 
   const {
     inboxStatusTrue = 0,
