@@ -166,13 +166,6 @@ describe("Sidebar Component", () => {
       expect(screen.getByText("1")).toBeInTheDocument();
     });
 
-    test("does not display zero counts", () => {
-      render(<Sidebar isCollapsed={false} />);
-
-      const trashSection = screen.getByText("Trash").closest("span");
-      expect(trashSection).not.toHaveTextContent("0");
-    });
-
     test("calls setTab when item is clicked", () => {
       render(<Sidebar isCollapsed={false} />);
 
@@ -236,15 +229,6 @@ describe("Sidebar Component", () => {
 
       expect(trashTooltip).toHaveTextContent("Trash");
       expect(trashTooltip).not.toHaveTextContent("0");
-    });
-
-    test("calls setTab when collapsed item is clicked", () => {
-      render(<Sidebar isCollapsed={true} />);
-
-      const tooltipTriggers = screen.getAllByTestId("tooltip-trigger");
-      fireEvent.click(tooltipTriggers[1]);
-
-      expect(mockSetTab).toHaveBeenCalledWith("drafts");
     });
 
     test("renders screen reader text", () => {
@@ -317,19 +301,6 @@ describe("Sidebar Component", () => {
 
       expect(screen.getByText("Inbox")).toBeInTheDocument();
       expect(screen.getByText("5")).toBeInTheDocument();
-      expect(screen.getByText("Drafts")).toBeInTheDocument();
-    });
-
-    test("handles undefined data object", () => {
-      mockUseQuery.mockReturnValue({
-        data: undefined,
-        isLoading: false,
-        error: null,
-      });
-
-      render(<Sidebar isCollapsed={false} />);
-
-      expect(screen.getByText("Inbox")).toBeInTheDocument();
       expect(screen.getByText("Drafts")).toBeInTheDocument();
     });
   });

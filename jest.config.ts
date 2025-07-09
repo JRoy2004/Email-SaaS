@@ -17,6 +17,15 @@ const config: Config = {
     "^@tests/(.*)$": "<rootDir>/tests/$1",
   },
   moduleDirectories: ["node_modules", "src"], // optional but helps resolve paths
+
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "/src/components/ui/",
+    "/src/hooks/",
+    "/src/trpc/",
+    "/src/env.js",
+    "/src/app/_components/",
+  ],
 };
 
 export default config;

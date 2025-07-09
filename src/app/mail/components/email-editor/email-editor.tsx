@@ -1,6 +1,6 @@
 "use client";
 import { useEditor, EditorContent } from "@tiptap/react";
-import { useState } from "react";
+import React, { useState } from "react";
 
 // TipTap Extensions
 import Link from "@tiptap/extension-link";
@@ -79,10 +79,8 @@ const EmailEditor = ({
     immediatelyRender: false, // Explicitly set to false to avoid hydration issues in SSR environments
     extensions: [
       StarterKit,
-
       Link,
       Typography,
-
       Underline,
       TextAlign.configure({
         types: ["heading", "paragraph"],

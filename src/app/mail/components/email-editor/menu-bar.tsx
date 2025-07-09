@@ -1,3 +1,4 @@
+import React from "react";
 import { type Editor } from "@tiptap/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,11 +17,8 @@ import {
   Heading2,
   Heading3,
   Heading4,
-  Heading5,
-  Heading6,
   List,
   ListOrdered,
-  Code2,
   Quote,
   CornerDownLeft,
   Undo,
