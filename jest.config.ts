@@ -25,6 +25,7 @@ const config: Config = {
     "/src/trpc/",
     "/src/env.js",
     "/src/app/_components/",
+    "/src/app/mail/atoms.ts",
   ],
 };
 
