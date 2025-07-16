@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { openai } from "@/lib/openai";
+import { openaiInstance } from "@/lib/openai";
 import { createTRPCRouter, privateProcedure } from "../trpc";
 
 type ChatCompletionMessageParam = {
@@ -22,7 +22,7 @@ export const chatRouter = createTRPCRouter({
         { role: "user", content: input.prompt },
       ].filter((m): m is ChatCompletionMessageParam => m !== null);
 
-      const completion = await openai.chat.completions.create({
+      const completion = await openaiInstance.chat.completions.create({
         model: "gpt-4.1-nano",
         messages,
         temperature: input.temperature,
@@ -38,7 +38,7 @@ export const chatRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
-      const completion = await openai.chat.completions.create({
+      const completion = await openaiInstance.chat.completions.create({
         model: "gpt-4.1-nano",
         messages: [{ role: "system", content: input.context }],
         temperature: input.temperature,

@@ -16,7 +16,7 @@ const MailDashboard = () => {
   return (
     <div>
       <Mail
-        defaultLayout={[26, 32, 42]}
+        defaultLayout={[24, 30, 46]}
         defaultCollapsed={false}
         navCollasedSize={5}
       />

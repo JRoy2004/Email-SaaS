@@ -92,7 +92,7 @@ const Mail = ({
                   {/* Account Switcher */}
                   <AccountSwitcher isCollapsed={isCollapsed} />
                 </div>
-                <div className="flex h-[85vh] flex-col justify-between">
+                <div className="flex h-[70vh] flex-col justify-between">
                   <div className="jaga flex flex-col gap-4 p-2 pb-4">
                     <div>
                       {/* sidebar */}
@@ -104,7 +104,7 @@ const Mail = ({
                     </div>
                     <Separator />
                   </div>
-                  <div className="pl-2">
+                  <div className="pl-2 pr-2">
                     <AskAI isCollapsed={isCollapsed} />
                   </div>
                 </div>

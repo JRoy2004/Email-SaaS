@@ -23,7 +23,9 @@ export async function syncEmailToDatabase(
           await upsertEmail(email, accountId, index);
           const bodyContent =
             email.bodySnippet ?? getPlainText(email.body ?? "");
-          const embeddings = getEmbeddings(email.subject + bodyContent);
+          const embeddings = getEmbeddings(
+            email.from.address + email.subject + bodyContent,
+          );
 
           // Build the document in the shape expected by Orama
           const emailDoc = {

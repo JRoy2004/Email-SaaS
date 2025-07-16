@@ -1,7 +1,6 @@
 import { create, insert, search, type AnyOrama, remove } from "@orama/orama";
 import { persist, restore } from "@orama/plugin-data-persistence";
 import { db } from "@/server/db";
-// import { getEmbeddings } from "@/lib/embeddings";
 import type { OramaEmail } from "@/types";
 import { getEmbeddings } from "./embeddings";
 
