@@ -21,7 +21,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-import GetNewEmails from "@/components/GetNewEmails";
+import GetNewEmails from "@/components/get-new-emails";
 
 const ThreadList = ({ done }: { done: boolean }) => {
   const [currentPage, setCurrentPage] = useState(1);

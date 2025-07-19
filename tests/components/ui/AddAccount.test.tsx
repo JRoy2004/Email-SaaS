@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import AddAccount from "@/components/AddAccount";
+import AddAccount from "@/components/add-account";
 
 type prop = {
   children: React.ReactNode;

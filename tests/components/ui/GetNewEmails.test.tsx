@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import GetNewEmails from "@/components/GetNewEmails";
+import GetNewEmails from "@/components/get-new-emails";
 import { updateEmail } from "@/lib/update-emails";
 
 // Mock the updateEmail function

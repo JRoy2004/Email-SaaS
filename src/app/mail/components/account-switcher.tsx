@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import AddAccount from "@/components/AddAccount";
+import AddAccount from "@/components/add-account";
 import { useAtomValue, useSetAtom } from "jotai";
 import { accountDetails } from "../atoms";
 
