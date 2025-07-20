@@ -36,7 +36,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 import ReplyBox from "./reply-box";
 import AISummarizer from "./ai-summarizer";
-import { boolean } from "zod";
 
 const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
   const setThreadId = useSetAtom(threadIdAtom);
@@ -44,6 +43,8 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
   const accountInfo = useAtomValue(accountDetails);
   const accountEmail = accountInfo?.emailAddress;
   // const today = new Date();
+
+  console.log(threadItem);
 
   const [summary, setSummary] = useState<string>("");
   const [expanded, setExpanded] = useState<boolean>(false);

@@ -1,9 +1,5 @@
 import { waitUntil } from "@vercel/functions";
-import {
-  exchangeCodeForAccessToken,
-  getAccountDetails,
-  getAccountInfo,
-} from "@/lib/aurinko";
+import { exchangeCodeForAccessToken, getAccountDetails } from "@/lib/aurinko";
 import { db } from "@/server/db";
 import { auth } from "@clerk/nextjs/server";
 import type { NextRequest } from "next/server";
@@ -19,7 +15,7 @@ export const GET = async (req: NextRequest) => {
   const params = req.nextUrl.searchParams;
   const status = params.get("status");
 
-  console.log("STATUS\n", status);
+  // console.log("STATUS\n", status);
 
   if (status != "success")
     return NextResponse.json(
@@ -30,12 +26,12 @@ export const GET = async (req: NextRequest) => {
   // get the code to exchange for the access token
   const code = params.get("code")?.trim();
 
-  console.log("CODE\n", code);
+  // console.log("CODE\n", code);
   if (!code)
     return NextResponse.json({ message: "No code Provided" }, { status: 400 });
   const token = await exchangeCodeForAccessToken(code);
 
-  console.log("TOKEN\n", token);
+  // console.log("TOKEN\n", token);
   if (!token)
     return NextResponse.json(
       { message: "Failed to exchange code for access token" },

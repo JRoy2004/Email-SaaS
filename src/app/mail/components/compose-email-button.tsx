@@ -59,7 +59,7 @@ const ComposeEmailButton = ({ isCollapsed }: Props) => {
           toast.success("Email sent");
         },
         onError: () => {
-          toast.error("Error");
+          toast.error("Failed to Send Email");
         },
       },
     );

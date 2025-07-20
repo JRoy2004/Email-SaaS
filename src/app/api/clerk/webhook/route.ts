@@ -26,8 +26,17 @@ export const POST = async (req: Request) => {
     return new Response("No valid email provided", { status: 400 });
   }
 
-  await db.user.create({
-    data: {
+  await db.user.upsert({
+    where: {
+      id: id,
+    },
+    update: {
+      emailAddress: email_addresses[0].email_address,
+      firstName: first_name,
+      lastName: last_name,
+      imageURL: profile_image_url,
+    },
+    create: {
       id: id,
       emailAddress: email_addresses[0].email_address,
       firstName: first_name,

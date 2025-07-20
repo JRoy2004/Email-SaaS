@@ -4,7 +4,7 @@ const config: Config = {
   preset: "ts-jest/presets/js-with-babel",
   testEnvironment: "jsdom",
   roots: ["<rootDir>/tests"],
-  testMatch: ["**/*.test.ts", "**/*.test.tsx"],
+  testMatch: ["**/*.test.ts", "**/*.test.tsx", "**/*.test.js"],
   setupFilesAfterEnv: ["<rootDir>/tests/setup/jest.setup.ts"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   transform: {
@@ -21,11 +21,11 @@ const config: Config = {
   coveragePathIgnorePatterns: [
     "/node_modules/",
     "/src/components/ui/",
-    "/src/hooks/",
     "/src/trpc/",
     "/src/env.js",
     "/src/app/_components/",
     "/src/app/mail/atoms.ts",
+    "/src/lib/aurinko.ts",
   ],
 };
 

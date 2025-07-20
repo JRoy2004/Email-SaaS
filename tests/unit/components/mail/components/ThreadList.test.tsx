@@ -20,7 +20,7 @@ jest.mock("jotai", () => {
 
 jest.mock("@/app/mail/hooks/useThreads", () => jest.fn());
 
-jest.mock("@/components/GetNewEmails", () => () => (
+jest.mock("@/components/get-new-emails.tsx", () => () => (
   <div>Mocked GetNewEmails</div>
 ));
 

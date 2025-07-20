@@ -31,7 +31,7 @@ jest.mock("@/trpc/react", () => ({
   },
 }));
 
-jest.mock("@/components/AddAccount", () => () => (
+jest.mock("@/components/add-account.tsx", () => () => (
   <div data-testid="add-account">AddAccount</div>
 ));
 
