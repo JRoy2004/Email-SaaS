@@ -25,7 +25,6 @@ const config: Config = {
     "/src/env.js",
     "/src/app/_components/",
     "/src/app/mail/atoms.ts",
-    "/src/lib/aurinko.ts",
   ],
 };
 
