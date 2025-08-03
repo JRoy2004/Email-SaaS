@@ -44,7 +44,6 @@ const useThreads = ({ page, done, searchItem }: Props) => {
       placeholderData: (e) => e,
     },
   );
-  console.log(regularQuery);
 
   // Search mutation
   const searchMutation = api.account.searchEmail.useMutation();

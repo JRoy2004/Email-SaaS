@@ -63,7 +63,6 @@ export class OramaClient {
       similarity: 0.8,
       limit: numResults,
     });
-    // console.log(results.hits.map(hit => hit.document))
     return results;
   }
   async search({ term }: { term: string }) {

@@ -80,7 +80,6 @@ const AIComposeButton = ({ isComposing, onGenerate }: Props) => {
   const handleButtonClick = async (e: React.MouseEvent) => {
     setOpen(false); // Close the dialog after the request is finished
     await handleSubmit(e); // Await the submission process
-    // console.log("Run AI");
     setPrompt(""); // Reset the prompt
   };
 

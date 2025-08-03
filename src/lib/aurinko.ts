@@ -15,7 +15,6 @@ export const getAurinkoAuthUrl = async (
     responseType: "code",
     returnUrl: `${process.env.NEXT_PUBLIC_URL}/api/aurinko/callback`,
   });
-  // console.log(params);
   return `https://api.aurinko.io/v1/auth/authorize?${params.toString()}`;
 };
 

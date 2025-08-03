@@ -52,8 +52,6 @@ const AccountSwitcher = ({ isCollapsed }: AccountSwitcherProps) => {
 
   if (!accounts || accounts.length === 0) return <AddAccount />;
 
-  // console.log(accountId);
-
   return (
     <Select defaultValue={accountId} onValueChange={handelChange}>
       <SelectTrigger

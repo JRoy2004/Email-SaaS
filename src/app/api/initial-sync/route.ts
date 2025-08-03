@@ -31,7 +31,6 @@ export const POST = async (req: NextRequest) => {
       { status: 500 },
     );
   const { emails, deltaToken } = response;
-  // console.log(emails);
 
   await updatedeltaToken(deltaToken, accountId);
 

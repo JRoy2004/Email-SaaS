@@ -70,7 +70,6 @@ const ThreadList = ({ done }: { done: boolean }) => {
   ) => {
     if (!thread) return [];
 
-    // console.log(thread[0]?.sysClassifications);
     // Process thread labels here
     const emailTags = new Set<string>();
 

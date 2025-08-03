@@ -48,7 +48,6 @@ When responding, please keep in mind:
       model: openai.chat("gpt-4"),
       messages: [prompt, ...messages],
     });
-    // console.log(result.toTextStreamResponse());
 
     return result.toDataStreamResponse();
   } catch (error) {

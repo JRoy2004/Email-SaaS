@@ -35,7 +35,6 @@ export const updateEmail = async (accountId: string): Promise<void> => {
 
     try {
       if (!emailAccount.nextDeltaToken) {
-        console.log("Performing  sync...");
         syncResult = await dbAccount.performInitialSync();
       } else {
         syncResult = await dbAccount.getEmailDeltaToken(
@@ -53,7 +52,6 @@ export const updateEmail = async (accountId: string): Promise<void> => {
       throw new Error("Invalid sync result: Missing delta token");
     }
     const emailCount = syncResult.emails?.length || 0;
-    console.log(`Sync completed. Found ${emailCount} new emails.`);
 
     if (emailCount > 0) {
       // 6. Process emails
@@ -69,7 +67,6 @@ export const updateEmail = async (accountId: string): Promise<void> => {
     // 7. Update delta token
     try {
       await updatedeltaToken(syncResult.deltaToken, accountId);
-      // console.log("Delta token updated successfully");
     } catch (tokenError) {
       throw new Error(
         `Failed to update delta token: ${tokenError instanceof Error ? tokenError.message : "Token update error"}`,
@@ -82,7 +79,6 @@ export const updateEmail = async (accountId: string): Promise<void> => {
     // Re-throw to allow calling code to handle the error
     throw error;
   } finally {
-    // console.log(`Email sync process completed for account: ${accountId}`);
   }
 };
 

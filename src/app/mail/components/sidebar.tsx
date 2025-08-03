@@ -56,8 +56,6 @@ const Sidebar = ({ isCollapsed }: sidebarProps) => {
     };
   });
 
-  // console.log(linkItems);
-
   return (
     <div
       data-collapsed={isCollapsed}
