@@ -22,6 +22,7 @@ import { threadIdAtom } from "./atoms";
 import ComposeEmailButton from "./components/compose-email-button";
 import SearchBar from "./components/search-bar";
 import AskAI from "./components/ask-AI";
+import Image from "next/image";
 
 type Props = {
   defaultLayout: number[] | undefined;
@@ -81,7 +82,16 @@ const Mail = ({
                     isCollapsed ? "flex-col" : "flex-col sm:flex-row",
                   )}
                 >
-                  <div className="p-5">logo</div>
+                  <div className="p-5">
+                    <Image
+                      src="/public/logo.png"
+                      alt="Apex Mail Logo"
+                      width={50}
+                      height={100}
+                      className="object-contain"
+                      priority // optional for performance on initial load
+                    />
+                  </div>
                   <div className={cn(!isCollapsed && "mr-2")}>
                     <ThemeToggle />
                   </div>
