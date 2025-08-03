@@ -11,7 +11,7 @@ import { Toaster } from "sonner";
 export const metadata: Metadata = {
   title: "ApexMail",
   description: "AI powered email clients",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/onlyLogo.png" }],
 };
 
 export default function RootLayout({

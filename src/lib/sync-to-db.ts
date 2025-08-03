@@ -21,7 +21,7 @@ export async function syncEmailToDatabase(
         limit(async () => {
           await upsertEmail(email, accountId, index);
           const bodyContent =
-            (getPlainText(email?.body ?? "") || email?.bodySnippet) ?? "";
+            email?.bodySnippet ?? getPlainText(email?.body ?? "");
           const embeddings = getEmbeddings(
             email?.from?.address + email?.subject + bodyContent,
           );

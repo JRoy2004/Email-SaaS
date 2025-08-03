@@ -84,11 +84,10 @@ const Mail = ({
                 >
                   <div className="p-5">
                     <Image
-                      src="/public/logo.png"
+                      src="/logo.png"
                       alt="Apex Mail Logo"
-                      width={50}
-                      height={100}
-                      className="object-contain"
+                      width={120}
+                      height={60}
                       priority // optional for performance on initial load
                     />
                   </div>
