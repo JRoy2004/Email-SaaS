@@ -22,7 +22,7 @@ export const POST = async (req: Request) => {
 
   // Ensure at least one email exists before accessing it
   // Check if email_addresses array is not empty
-  if (!email_addresses.length || !email_addresses[0]?.email_address) {
+  if (!email_addresses?.length || !email_addresses[0]?.email_address) {
     return new Response("No valid email provided", { status: 400 });
   }
 

@@ -44,8 +44,6 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
   const accountEmail = accountInfo?.emailAddress;
   // const today = new Date();
 
-  console.log(threadItem);
-
   const [summary, setSummary] = useState<string>("");
   const [expanded, setExpanded] = useState<boolean>(false);
 
@@ -239,11 +237,7 @@ const MailDisplay = ({ isMobile }: { isMobile: boolean }) => {
                           .map((chunk) => chunk[0])
                           .join("") ?? (
                           <div className="text-[8px]">
-                            {
-                              mail.from.address.split(".")[
-                                mail.from.address.split(".").length - 2
-                              ]
-                            }
+                            {mail.from.address.split(".")[0]}
                           </div>
                         )}
                       </AvatarFallback>

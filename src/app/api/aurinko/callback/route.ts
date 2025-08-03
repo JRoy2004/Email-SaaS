@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 
 export const GET = async (req: NextRequest) => {
-  console.log("Callback route hit");
+  // console.log("Callback route hit");
   const { userId } = await auth();
   if (!userId)
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -40,7 +40,7 @@ export const GET = async (req: NextRequest) => {
   const accountDetails = await getAccountDetails(token.accessToken);
 
   // const accountDetails = await getAccountInfo(token.accountId);
-  console.log("ACCOUNT DETAILS\n", accountDetails);
+  // console.log("ACCOUNT DETAILS\n", accountDetails);
 
   await db.account.upsert({
     where: { id: token.accountId.toString() },
@@ -62,7 +62,7 @@ export const GET = async (req: NextRequest) => {
         userId,
       })
       .then((response) => {
-        console.log("Initial sync triggered successfully", response.data);
+        // console.log("Initial sync triggered successfully", response.data);
       })
       .catch((err) => {
         console.error("Failed to trigger initial sync", err);
