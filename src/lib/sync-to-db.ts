@@ -11,30 +11,30 @@ export async function syncEmailToDatabase(
   emails: EmailMessage[],
   accountId: string,
 ) {
-  console.log(`Attempting to sync ${emails.length} emails to database.`);
+  // console.log(`Attempting to sync ${emails.length} emails to database.`);
   const limit = pLimit(20);
   const oramaDB = new OramaClient(accountId);
   await oramaDB.initialize();
 
   try {
     await Promise.all(
-      emails.map((email, index) =>
+      emails?.map((email, index) =>
         limit(async () => {
           await upsertEmail(email, accountId, index);
           const bodyContent =
-            email.bodySnippet ?? getPlainText(email.body ?? "");
+            (getPlainText(email?.body ?? "") || email?.bodySnippet) ?? "";
           const embeddings = getEmbeddings(
-            email.from.address + email.subject + bodyContent,
+            email?.from?.address + email?.subject + bodyContent,
           );
 
           // Build the document in the shape expected by Orama
           const emailDoc = {
-            subject: email.subject || "",
+            subject: email?.subject || "",
             body: bodyContent,
-            from: `${email.from.name} <${email.from.address}>`,
-            to: email.to.map((t) => `${t.name} <${t.address}>`),
-            sentAt: email.sentAt,
-            threadId: email.threadId,
+            from: `${email?.from.name} <${email?.from?.address}>`,
+            to: email?.to.map((t) => `${t?.name} <${t?.address}>`),
+            sentAt: email?.sentAt,
+            threadId: email?.threadId,
             embeddings: embeddings,
           };
 
