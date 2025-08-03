@@ -76,7 +76,6 @@ export const updateEmail = async (accountId: string): Promise<void> => {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error occurred";
     logError(`Account ${accountId}: ${errorMessage}`, error);
-    // Re-throw to allow calling code to handle the error
     throw error;
   } finally {
   }
